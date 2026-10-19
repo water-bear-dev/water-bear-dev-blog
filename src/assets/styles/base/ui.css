@@ -1,0 +1,78 @@
+.post-list-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+  overflow: visible;
+}
+
+.post-list-group ul li {
+  list-style-type: none;
+}
+
+.post-list-group ul {
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.post-list-group li {
+  position: relative;
+  padding: 0.2rem 0;
+  border-left: none;
+}
+
+.post-list {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  position: relative;
+}
+
+.post-link {
+  min-width: 0;
+  padding: 0.15rem 0.5rem;
+  border-radius: 5px;
+}
+
+.post-tag {
+  display: inline-flex;
+
+  /* height: 1.1rem; */
+  padding: 0 0.3rem !important;
+  font-weight: 400 !important;
+  color: var(--color-accent-alt);
+  background-color: var(--color-accent);
+  transition: background-color 0.5s ease;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  text-decoration: none;
+  white-space: nowrap;
+  border-radius: 4px;
+}
+
+.post-tags {
+  display: flex;
+  flex-wrap: wrap;
+  max-height: 7.5rem;
+
+  /* overflow-y: auto; */
+  gap: 0.4rem;
+}
+
+.split-line {
+  /* height: 1rem; */
+  margin: 1.5rem 0;
+  padding: 0;
+  border-color: var(--color-accent-alt);
+  transform-origin: left center;
+}
+
+[data-motion] {
+  backface-visibility: hidden;
+}
+
+.motion-slide-layer {
+  will-change: transform, opacity;
+}
