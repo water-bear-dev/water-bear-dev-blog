@@ -1,17 +1,25 @@
 <template>
-  <button type="button" class="theme-toggle" @click="onToggle">
-    {{ label }}
+  <button
+    type="button"
+    class="theme-toggle"
+    :aria-label="label"
+    :title="label"
+    @click="onToggle"
+  >
+    <component :is="icon" class="theme-toggle-icon" />
   </button>
 </template>
 
 <script setup>
 import { computed } from 'vue'
 import { useConfigStore } from '@/stores/config'
+import SunIcon from '@/assets/icons/sun.svg?component'
+import MoonIcon from '@/assets/icons/moon.svg?component'
 
 const configStore = useConfigStore()
-const label = computed(() =>
-  configStore.themeMode === 'dark' ? 'Light mode' : 'Dark mode'
-)
+const isDark = computed(() => configStore.themeMode === 'dark')
+const label = computed(() => (isDark.value ? 'Switch to light mode' : 'Switch to dark mode'))
+const icon = computed(() => (isDark.value ? SunIcon : MoonIcon))
 
 function onToggle() {
   configStore.toggleThemeMode()
@@ -20,21 +28,32 @@ function onToggle() {
 
 <style scoped>
 .theme-toggle {
-  width: 100%;
+  display: inline-flex;
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1000;
+  width: 2.5rem;
+  height: 2.5rem;
   margin: 0;
-  padding: 0.15rem 0.5rem;
+  padding: 0;
   border: 0;
-  border-radius: 7px;
+  border-radius: 999px;
   color: var(--color-accent-alt);
   background-color: var(--color-accent);
-  font: inherit;
-  font-weight: 700;
-  text-align: center;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 18%);
   transition:
     color 0.24s ease,
     background-color 0.24s ease,
     transform 0.32s cubic-bezier(0.34, 1.6, 0.64, 1);
+}
+
+.theme-toggle-icon {
+  width: 1.2rem;
+  height: 1.2rem;
 }
 
 .theme-toggle:hover,

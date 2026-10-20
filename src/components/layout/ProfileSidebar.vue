@@ -20,11 +20,10 @@
       </LinkStyleScope>
     </div>
 
-    <div class="my-2 d-flex flex-column gap-2">
+    <div class="my-2">
       <LinkStyleScope variant="filled" background-radius="7px">
         <RouterLink :to="{ name: 'Home' }" class="profile-home-link w-100">Home</RouterLink>
       </LinkStyleScope>
-      <ThemeToggle />
     </div>
 
     <hr class="split-line my-0" />
@@ -54,7 +53,6 @@ import GithubIcon from '@/assets/icons/icons8-github.svg?component'
 import LinkedinIcon from '@/assets/icons/icons8-linkedin.svg?component'
 import WebsiteIcon from '@/assets/icons/icons8-website.svg?component'
 import LinkStyleScope from '@/components/common/LinkStyleScope.vue'
-import ThemeToggle from '@/components/layout/ThemeToggle.vue'
 import { useConfigStore } from '@/stores/config'
 import { usePostStore } from '@/stores/post'
 

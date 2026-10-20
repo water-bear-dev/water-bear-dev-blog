@@ -1,6 +1,7 @@
 <template>
   <LinkStyleScope>
     <div class="app-shell">
+      <ThemeToggle />
       <div :class="appContainerClass">
         <div class="row align-items-start">
           <div
@@ -45,6 +46,7 @@ import FullScreenLayout from '@/layouts/FullScreenLayout.vue'
 import IntroOnlyLayout from '@/layouts/IntroOnlyLayout.vue'
 import LinkStyleScope from '@/components/common/LinkStyleScope.vue'
 import ProfileSidebar from '@/components/layout/ProfileSidebar.vue'
+import ThemeToggle from '@/components/layout/ThemeToggle.vue'
 
 const route = useRoute()
 const routeMotion = createMotionTransition({
