@@ -35,7 +35,7 @@
         <RouterLink
           v-for="tag in tags"
           :key="tag"
-          :to="{ name: 'Archive' }"
+          :to="{ name: $route.name === 'Archive' ? 'Archive' : 'Home' }"
           class="post-tag small"
           :class="{ selected: isSelected(tag) }"
           @click="switchSelectStatus(tag)"

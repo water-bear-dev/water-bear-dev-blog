@@ -8,6 +8,9 @@
       <li class="motion-slide-layer" data-motion-scope="route" data-motion="slide">
         <RouterLink :to="{ name: 'Timeline' }"> Timeline... </RouterLink>
       </li>
+      <li class="motion-slide-layer" data-motion-scope="route" data-motion="slide">
+        <RouterLink :to="{ name: 'Archive' }"> Archive... </RouterLink>
+      </li>
     </ul>
   </div>
 </template>

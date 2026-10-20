@@ -39,7 +39,7 @@
             </RouterLink>
             <div class="flex-shrink-0 post-list-meta">
               <span
-                v-for="tag in post.tags.slice(0, postTagMaxNum)"
+                v-for="tag in visibleTags(post).slice(0, postTagMaxNum)"
                 :key="tag"
                 class="post-tag small ms-2"
               >
@@ -110,6 +110,7 @@ const postStore = usePostStore()
 const configStore = useConfigStore()
 const route = useRoute()
 const listTitle = computed(() => route.meta.listTitle || 'ARCHIVE')
+const listScope = computed(() => (route.name === 'Archive' ? 'archive' : 'home'))
 // post tag 预览数量
 const postTagMaxNum = ref(3)
 const archiveListRoot = ref(null)
@@ -131,15 +132,22 @@ const archiveListMotion = createMotionTransition({
   }
 })
 
-const totalPages = computed(() => postStore.getFilteredPages(configStore.pageSize))
-const visiblePosts = computed(() => postStore.getFilteredPaginatedPosts(configStore.pageSize))
+const totalPages = computed(() => postStore.getFilteredPages(configStore.pageSize, listScope.value))
+const visiblePosts = computed(() =>
+  postStore.getFilteredPaginatedPosts(configStore.pageSize, listScope.value)
+)
 const archiveListSignature = computed(() =>
   [
+    listScope.value,
     postStore.currentPage,
     postStore.selectedTags.slice().sort().join(','),
     visiblePosts.value.map((post) => post.slug).join('|')
   ].join('::')
 )
+
+function visibleTags(post) {
+  return post.tags.filter((tag) => tag.toLowerCase() !== 'archive')
+}
 
 function updateMaxTags() {
   const width = window.innerWidth
@@ -224,6 +232,10 @@ onMounted(async () => {
   updateMaxTags()
   runArchiveListMotionAtPageMotionStart()
   window.addEventListener('resize', updateMaxTags)
+})
+
+watch(listScope, () => {
+  postStore.currentPage = 1
 })
 
 watch(

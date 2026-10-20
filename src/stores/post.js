@@ -73,6 +73,20 @@ function normalizePageSize(pageSize) {
   return Number.isFinite(size) && size > 0 ? size : 1
 }
 
+export const ARCHIVE_TAG = 'archive'
+
+function isArchiveTag(tag) {
+  return String(tag).toLowerCase() === ARCHIVE_TAG
+}
+
+function hasArchiveTag(post) {
+  return post.tags.some(isArchiveTag)
+}
+
+function displayTags(tags) {
+  return tags.filter((tag) => !isArchiveTag(tag))
+}
+
 export const usePostStore = defineStore('post', () => {
   const posts = ref(null)
   const selectedTags = ref([])
@@ -81,19 +95,28 @@ export const usePostStore = defineStore('post', () => {
 
   const postList = computed(() => posts.value ?? [])
   const sortedPosts = computed(() => sortPostsByCreatedTime(postList.value))
-  const tags = computed(() => [...new Set(postList.value.flatMap((post) => post.tags))].sort())
+  const activePosts = computed(() => sortedPosts.value.filter((post) => !hasArchiveTag(post)))
+  const archivedPosts = computed(() => sortedPosts.value.filter(hasArchiveTag))
+  const tags = computed(() =>
+    [...new Set(postList.value.flatMap((post) => displayTags(post.tags)))].sort()
+  )
   const getAllTags = computed(() => tags.value)
 
-  const getFilteredPosts = computed(() => {
-    if (selectedTags.value.length === 0) {
-      return sortedPosts.value
-    }
+  function getScopedPosts(scope) {
+    return scope === 'archive' ? archivedPosts.value : activePosts.value
+  }
+
+  const getFilteredPosts = computed(() => getFilteredPostsFor('home'))
+
+  function getFilteredPostsFor(scope) {
+    const base = getScopedPosts(scope)
+    if (selectedTags.value.length === 0) return base
 
     const selected = new Set(selectedTags.value)
-    return sortedPosts.value.filter((post) => post.tags.some((tag) => selected.has(tag)))
-  })
+    return base.filter((post) => displayTags(post.tags).some((tag) => selected.has(tag)))
+  }
 
-  const timeGroupPosts = computed(() => groupPostsByYearMonth(sortedPosts.value))
+  const timeGroupPosts = computed(() => groupPostsByYearMonth(activePosts.value))
 
   async function load(sourcePath) {
     if (posts.value) return
@@ -117,16 +140,17 @@ export const usePostStore = defineStore('post', () => {
     currentPage.value = 1
   }
 
-  function getFilteredPaginatedPosts(pageSize) {
+  function getFilteredPaginatedPosts(pageSize, scope = 'home') {
     const size = normalizePageSize(pageSize)
     const start = (currentPage.value - 1) * size
-    return getFilteredPosts.value.slice(start, start + size)
+    return getFilteredPostsFor(scope).slice(start, start + size)
   }
 
-  function getFilteredPages(pageSize) {
-    if (getFilteredPosts.value.length === 0) return 1
+  function getFilteredPages(pageSize, scope = 'home') {
+    const filtered = getFilteredPostsFor(scope)
+    if (filtered.length === 0) return 1
 
-    return Math.ceil(getFilteredPosts.value.length / normalizePageSize(pageSize))
+    return Math.ceil(filtered.length / normalizePageSize(pageSize))
   }
 
   function getPostByTitle(title) {
@@ -137,7 +161,7 @@ export const usePostStore = defineStore('post', () => {
     const post = getPostByTitle(title)
     if (!post) return []
 
-    return post.tags
+    return displayTags(post.tags)
       .map((tag) => {
         const titles = postList.value
           .filter((candidate) => candidate.tags.includes(tag) && candidate.title !== title)
