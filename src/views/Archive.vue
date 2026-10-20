@@ -1,7 +1,7 @@
 <template>
   <div class="flex-grow-1 d-flex flex-column h-auto" style="overflow: visible">
     <h1 class="archive-title motion-slide-layer" data-motion-scope="route" data-motion="slide">
-      ARCHIVE
+      {{ listTitle }}
     </h1>
     <div
       ref="archiveListRoot"
@@ -106,6 +106,7 @@ import LinkStyleScope from '@/components/common/LinkStyleScope.vue'
 const postStore = usePostStore()
 const configStore = useConfigStore()
 const route = useRoute()
+const listTitle = computed(() => route.meta.listTitle || 'ARCHIVE')
 // post tag 预览数量
 const postTagMaxNum = ref(3)
 const archiveListRoot = ref(null)

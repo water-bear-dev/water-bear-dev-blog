@@ -4,7 +4,6 @@ import { usePostStore } from '@/stores/post'
 import { beginPageReady } from '@/utils/pageReady'
 import { beginPageMotion } from '@/utils/pageMotion'
 
-const Home = () => import('@/views/Home.vue')
 const Post = () => import('@/views/Post.vue')
 const Archive = () => import('@/views/Archive.vue')
 const Timeline = () => import('@/views/Timeline.vue')
@@ -17,11 +16,12 @@ const routes = [
     path: '/',
     name: 'Home',
     components: {
-      default: Home
+      default: Archive
     },
     meta: {
       layout: 'introOnly',
-      title: siteTitle
+      title: siteTitle,
+      listTitle: 'POSTS'
     }
   },
   {
@@ -32,7 +32,8 @@ const routes = [
     },
     meta: {
       layout: 'introOnly',
-      title: 'Archive - ' + siteTitle
+      title: 'Archive - ' + siteTitle,
+      listTitle: 'ARCHIVE'
     }
   },
   {
