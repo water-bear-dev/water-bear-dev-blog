@@ -3,13 +3,10 @@
     <hr class="split-line motion-slide-layer" data-motion-scope="route" data-motion="slide" />
     <ul>
       <li class="motion-slide-layer" data-motion-scope="route" data-motion="slide">
-        <RouterLink :to="{ name: 'Timeline' }"> Timeline... </RouterLink>
-      </li>
-      <li class="motion-slide-layer" data-motion-scope="route" data-motion="slide">
-        <RouterLink :to="{ name: 'Archive' }"> Archive... </RouterLink>
-      </li>
-      <li class="motion-slide-layer" data-motion-scope="route" data-motion="slide">
         <RouterLink :to="{ name: 'Home' }"> Home... </RouterLink>
+      </li>
+      <li class="motion-slide-layer" data-motion-scope="route" data-motion="slide">
+        <RouterLink :to="{ name: 'Timeline' }"> Timeline... </RouterLink>
       </li>
     </ul>
   </div>
@@ -22,19 +19,19 @@
 }
 
 .nav-container ul {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.25rem;
   margin: 0;
   padding: 0;
 }
 
 .nav-container ul li {
-  margin-right: 0;
-  margin-left: 0;
-  padding-bottom: 0.7rem;
-  padding-right: 0;
-  padding-left: 0;
+  margin: 0;
+  padding: 0;
   font-weight: bold;
   list-style-type: none;
-
-  /* line-height: 1; */
 }
 </style>

@@ -19,7 +19,7 @@
           <li
             v-for="(post, index) in visiblePosts"
             :key="post.slug"
-            class="d-flex justify-content-between align-items-center motion-slide-layer"
+            class="d-flex justify-content-between align-items-start motion-slide-layer post-list-item"
             data-motion-scope="archive-list"
             data-motion="slide"
             data-motion-x="28"
@@ -30,11 +30,14 @@
               :to="{ name: 'Post', params: { title: post.title } }"
               class="flex-grow-1 post-link"
             >
-              <div class="text-truncate">
+              <div class="post-list-title">
                 {{ post.title }}
               </div>
+              <p v-if="post.excerpt" class="post-list-excerpt mb-0">
+                {{ post.excerpt }}
+              </p>
             </RouterLink>
-            <div class="flex-shrink-0">
+            <div class="flex-shrink-0 post-list-meta">
               <span
                 v-for="tag in post.tags.slice(0, postTagMaxNum)"
                 :key="tag"
@@ -56,7 +59,7 @@
 
     <div class="archive-pager motion-slide-layer" data-motion-scope="route" data-motion="slide">
       <LinkStyleScope variant="normal">
-        <RouterLink :to="{ name: 'Archive' }" @click="prevPage">
+        <RouterLink :to="{ name: route.name }" @click="prevPage">
           <component :is="BackIcon" class="pagination-icon" />
         </RouterLink>
 
@@ -66,7 +69,7 @@
 
             <RouterLink
               v-else
-              :to="{ name: 'Archive' }"
+              :to="{ name: route.name }"
               :class="{ selected: page === postStore.currentPage }"
               class="pagination-item"
               @click="goToPage(page)"
@@ -77,7 +80,7 @@
         </LinkStyleScope>
 
         <RouterLink
-          :to="{ name: 'Archive' }"
+          :to="{ name: route.name }"
           :disabled="postStore.currentPage === totalPages"
           @click="nextPage"
         >
@@ -247,6 +250,35 @@ onUnmounted(() => {
   padding: 0;
   color: var(--color-accent);
   font-weight: 700;
+}
+
+.post-list-item {
+  gap: 0.75rem;
+  padding: 0.65rem 0;
+}
+
+.post-list-title {
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.post-list-excerpt {
+  margin-top: 0.35rem;
+  color: var(--color-primary-alt);
+  font-size: 0.92rem;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.post-list-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  max-width: 40%;
+  row-gap: 0.35rem;
 }
 
 /* 选页卡 */

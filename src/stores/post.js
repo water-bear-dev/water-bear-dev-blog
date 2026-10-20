@@ -23,7 +23,8 @@ function normalizePost(post) {
   return {
     ...post,
     created_time: normalizeCreatedTime(post.created_time),
-    tags: Array.isArray(post.tags) ? post.tags : []
+    tags: Array.isArray(post.tags) ? post.tags : [],
+    excerpt: typeof post.excerpt === 'string' ? post.excerpt : ''
   }
 }
 

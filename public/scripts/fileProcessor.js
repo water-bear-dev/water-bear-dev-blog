@@ -1,7 +1,12 @@
 import fs from 'fs'
 import path from 'path'
 import crypto from 'crypto'
-import { extractMdMetadata, fixMdAssetsRef, removeMdMetadata } from './mdProcessor.js'
+import {
+  extractExcerpt,
+  extractMdMetadata,
+  fixMdAssetsRef,
+  removeMdMetadata
+} from './mdProcessor.js'
 
 /**
  * 计算文件hash
@@ -227,6 +232,7 @@ export function movePosts(config, sortedFiles, publicDir, originDir, newDir) {
         title: getFileRealName(path.basename(newFile), suffixes),
         slug: path.basename(newFile),
         dir: sourceDir,
+        excerpt: extractExcerpt(finalContent),
         ...metadata
       })
     } else {

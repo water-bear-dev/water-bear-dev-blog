@@ -109,3 +109,33 @@ export function removeMdMetadata(mdText, matchPrefixes = []) {
 
   return mdText
 }
+
+/**
+ * Build a plain-text excerpt from markdown body content.
+ * @param {string} mdText markdown body (metadata already removed)
+ * @param {number} maxLength max excerpt length
+ * @returns {string}
+ */
+export function extractExcerpt(mdText, maxLength = 180) {
+  if (!mdText) return ''
+
+  const plain = mdText
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/`[^`]*`/g, ' ')
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/^>\s+/gm, '')
+    .replace(/^[-*+]\s+/gm, '')
+    .replace(/^\d+\.\s+/gm, '')
+    .replace(/[*_~|]+/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+
+  if (plain.length <= maxLength) return plain
+
+  const truncated = plain.slice(0, maxLength)
+  const lastSpace = truncated.lastIndexOf(' ')
+  const cutoff = lastSpace > maxLength * 0.6 ? lastSpace : maxLength
+  return `${truncated.slice(0, cutoff).trim()}…`
+}
