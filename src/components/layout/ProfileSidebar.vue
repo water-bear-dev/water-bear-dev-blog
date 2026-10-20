@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="px-2">
-      <img src="/images/avatar.png" class="profile-avatar img-fluid my-2" alt="" />
+      <img src="/images/avatar.png" class="profile-avatar img-fluid my-2" alt="Andrew Pham" />
     </div>
 
     <div class="d-flex flex-wrap justify-content-center align-items-center my-1 gap-3">
@@ -10,19 +10,21 @@
           v-for="(item, index) in socialLink"
           :key="index"
           :href="item.link"
-          class="col-2 col-sm-4 col-md-3 col-lg-2 d-flex justify-content-center align-items-center"
+          class="d-flex justify-content-center align-items-center"
           target="_blank"
           rel="noopener noreferrer"
+          :aria-label="item.label"
         >
           <component :is="item.icon" class="social-link-icon" />
         </a>
       </LinkStyleScope>
     </div>
 
-    <div class="my-2">
+    <div class="my-2 d-flex flex-column gap-2">
       <LinkStyleScope variant="filled" background-radius="7px">
         <RouterLink :to="{ name: 'Home' }" class="profile-home-link w-100">Home</RouterLink>
       </LinkStyleScope>
+      <ThemeToggle />
     </div>
 
     <hr class="split-line my-0" />
@@ -47,11 +49,12 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import GithubIcon from '@/assets/icons/icons8-github.svg?component'
-import DiscordIcon from '@/assets/icons/icons8-discord.svg?component'
-import NotionIcon from '@/assets/icons/icons8-notion.svg?component'
+import LinkedinIcon from '@/assets/icons/icons8-linkedin.svg?component'
 import WebsiteIcon from '@/assets/icons/icons8-website.svg?component'
 import LinkStyleScope from '@/components/common/LinkStyleScope.vue'
+import ThemeToggle from '@/components/layout/ThemeToggle.vue'
 import { useConfigStore } from '@/stores/config'
 import { usePostStore } from '@/stores/post'
 
@@ -59,12 +62,20 @@ const configStore = useConfigStore()
 const postStore = usePostStore()
 const tags = postStore.getAllTags
 
-const socialLink = [
-  { icon: GithubIcon, link: configStore.links.github },
-  { icon: NotionIcon, link: configStore.links.notion },
-  { icon: DiscordIcon, link: configStore.links.discord },
-  { icon: WebsiteIcon, link: configStore.links.website }
+const socialDefs = [
+  { key: 'github', label: 'GitHub', icon: GithubIcon },
+  { key: 'linkedin', label: 'LinkedIn', icon: LinkedinIcon },
+  { key: 'website', label: 'Personal site', icon: WebsiteIcon }
 ]
+
+const socialLink = computed(() =>
+  socialDefs
+    .map((item) => ({
+      ...item,
+      link: configStore.links[item.key]
+    }))
+    .filter((item) => item.link)
+)
 
 function switchSelectStatus(tag) {
   if (postStore.selectedTags.includes(tag)) {
@@ -86,7 +97,7 @@ const isSelected = (tag) => postStore.selectedTags.includes(tag)
 
 .profile-avatar {
   border-radius: 15px;
-  opacity: 0.75;
+  opacity: 1;
 }
 
 .profile-home-link {

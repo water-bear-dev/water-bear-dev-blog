@@ -10,11 +10,16 @@
 @import url('@/assets/styles/base/ui.css');
 
 :root {
+  color-scheme: dark;
   --color-bg: #142a31;
   --color-primary: #c0c7ca;
-  --color-primary-alt: #496e7d;
+  --color-primary-alt: #8aa0aa;
   --color-accent: #9d4022;
   --color-accent-alt: #cfa789;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
 }
 
 ::-webkit-scrollbar {

@@ -17,7 +17,7 @@ const configStore = useConfigStore()
   display: flex;
   width: 100%;
   height: 1.5rem;
-  color: var(--color-accent-alt);
+  color: var(--color-primary-alt);
   overflow-x: hidden;
   white-space: nowrap;
   justify-content: left; /* 水平居中 */

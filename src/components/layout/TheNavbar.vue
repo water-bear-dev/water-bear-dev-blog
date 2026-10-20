@@ -1,3 +1,7 @@
+<script setup>
+import ThemeToggle from '@/components/layout/ThemeToggle.vue'
+</script>
+
 <template>
   <div class="nav-container">
     <hr class="split-line motion-slide-layer" data-motion-scope="route" data-motion="slide" />
@@ -7,6 +11,13 @@
       </li>
       <li class="motion-slide-layer" data-motion-scope="route" data-motion="slide">
         <RouterLink :to="{ name: 'Timeline' }"> Timeline... </RouterLink>
+      </li>
+      <li
+        class="motion-slide-layer nav-theme d-md-none"
+        data-motion-scope="route"
+        data-motion="slide"
+      >
+        <ThemeToggle />
       </li>
     </ul>
   </div>
@@ -33,5 +44,10 @@
   padding: 0;
   font-weight: bold;
   list-style-type: none;
+}
+
+.nav-theme :deep(.theme-toggle) {
+  width: auto;
+  padding: 0.2rem 0.7rem;
 }
 </style>

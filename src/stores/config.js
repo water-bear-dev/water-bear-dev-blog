@@ -2,10 +2,11 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { fetchOk } from '@/utils/http'
 import { sanitizeHtml } from '@/utils/sanitizeHtml'
-import { applyInitialTheme } from '@/utils/theme'
+import { applyInitialTheme, resetThemeState, toggleTheme } from '@/utils/theme'
 
 export const useConfigStore = defineStore('config', () => {
   const config = ref(null)
+  const themeMode = ref('dark')
 
   const title = computed(() => config.value?.title ?? 'NONE')
   const subTitle = computed(() => config.value?.sub_title ?? 'NONE')
@@ -18,15 +19,22 @@ export const useConfigStore = defineStore('config', () => {
   )
   const colors = computed(
     () =>
-      config.value?.colors ?? [
-        {
-          '--color-bg': 'rgb(0, 61, 123)',
-          '--color-primary': 'rgb(255, 177, 88)',
-          '--color-primary-alt': 'rgb(245, 209, 168)',
-          '--color-accent': '#003f5c',
-          '--color-accent-alt': '#ffffff'
+      config.value?.colors ?? {
+        dark: {
+          '--color-bg': '#142a31',
+          '--color-primary': '#c0c7ca',
+          '--color-primary-alt': '#8aa0aa',
+          '--color-accent': '#9d4022',
+          '--color-accent-alt': '#cfa789'
+        },
+        light: {
+          '--color-bg': '#e8e6e1',
+          '--color-primary': '#2f2a28',
+          '--color-primary-alt': '#6d635e',
+          '--color-accent': '#8a4a32',
+          '--color-accent-alt': '#fff8f0'
         }
-      ]
+      }
   )
   const labelMap = computed(
     () =>
@@ -40,8 +48,7 @@ export const useConfigStore = defineStore('config', () => {
     () =>
       config.value?.links ?? {
         github: '',
-        discord: '',
-        notion: '',
+        linkedin: '',
         website: ''
       }
   )
@@ -50,16 +57,23 @@ export const useConfigStore = defineStore('config', () => {
     if (!config.value) {
       const res = await fetchOk(sourcePath)
       config.value = await res.json()
-      applyInitialTheme(colors.value)
+      themeMode.value = applyInitialTheme(colors.value)
     }
+  }
+
+  const toggleThemeMode = () => {
+    themeMode.value = toggleTheme(colors.value)
   }
 
   const reset = () => {
     config.value = null
+    themeMode.value = 'dark'
+    resetThemeState()
   }
 
   return {
     config,
+    themeMode,
     title,
     subTitle,
     introduction,
@@ -69,6 +83,7 @@ export const useConfigStore = defineStore('config', () => {
     pageSize,
     links,
     load,
+    toggleThemeMode,
     reset
   }
 })

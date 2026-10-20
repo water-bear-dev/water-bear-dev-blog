@@ -53,7 +53,7 @@ const scopeStyle = computed(() => [
 
   --bubble-link-weight: 700;
   --bubble-link-border-radius: 6px;
-  --bubble-link-color: var(--color-accent-alt);
+  --bubble-link-color: var(--color-primary);
   --bubble-link-bg: var(--color-accent);
   --bubble-link-hover-color: var(--bubble-link-color);
   --bubble-link-hover-bg: var(--bubble-link-bg);

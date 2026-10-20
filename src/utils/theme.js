@@ -1,4 +1,7 @@
-let initialTheme = null
+const STORAGE_KEY = 'water-bear-theme'
+const MODES = ['dark', 'light']
+
+let currentMode = null
 
 function isThemeToken(key, value) {
   return (
@@ -16,12 +19,35 @@ function hasThemeTokens(theme) {
   )
 }
 
-function getThemeList(themes) {
-  return Array.isArray(themes) ? themes.filter(hasThemeTokens) : []
+function getStoredMode() {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (MODES.includes(stored)) return stored
+  } catch {
+    /* ignore */
+  }
+  return null
 }
 
-function getRandomIndex(length) {
-  return Math.floor(Math.random() * length)
+function getPreferredMode() {
+  if (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: light)').matches) {
+    return 'light'
+  }
+  return 'dark'
+}
+
+export function resolveThemeTokens(themes, mode) {
+  if (!themes) return null
+
+  if (!Array.isArray(themes) && typeof themes === 'object') {
+    return themes[mode] || themes.dark || themes.light || null
+  }
+
+  if (Array.isArray(themes)) {
+    return mode === 'light' ? themes[1] || themes[0] : themes[0]
+  }
+
+  return null
 }
 
 export function applyTheme(theme, root) {
@@ -37,21 +63,38 @@ export function applyTheme(theme, root) {
   return true
 }
 
-export function pickRandomTheme(themes) {
-  const themeList = getThemeList(themes)
-  if (themeList.length === 0) return null
+export function getCurrentMode() {
+  return currentMode || getStoredMode() || getPreferredMode()
+}
 
-  return themeList[getRandomIndex(themeList.length)]
+export function applyThemeMode(themes, mode) {
+  const next = MODES.includes(mode) ? mode : 'dark'
+  applyTheme(resolveThemeTokens(themes, next))
+  currentMode = next
+
+  if (typeof document !== 'undefined') {
+    document.documentElement.dataset.theme = next
+    document.documentElement.style.colorScheme = next
+  }
+
+  try {
+    localStorage.setItem(STORAGE_KEY, next)
+  } catch {
+    /* ignore */
+  }
+
+  return next
 }
 
 export function applyInitialTheme(themes) {
-  if (initialTheme) return initialTheme
+  return applyThemeMode(themes, getStoredMode() || getPreferredMode())
+}
 
-  initialTheme = pickRandomTheme(themes)
+export function toggleTheme(themes) {
+  const next = getCurrentMode() === 'dark' ? 'light' : 'dark'
+  return applyThemeMode(themes, next)
+}
 
-  if (initialTheme && typeof document !== 'undefined') {
-    applyTheme(initialTheme)
-  }
-
-  return initialTheme
+export function resetThemeState() {
+  currentMode = null
 }
